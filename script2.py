@@ -1,19 +1,17 @@
-## THIS SCRIPT DIVIDES THE INBOUNDS PACKETS INTO FRAMES WITH BACKGROUND AND WITHOUT BACKGROUND
+## This script divides all packets in frames of half a second.
+## I use a list of a list to create a dynamic and different-size rows matrix
 
-FIRST_PERSON_IN_PACKETS = []
-FIRST_BACKGROUND_IN_PACKETS = []
-SECOND_PERSON_IN_PACKETS = []
-SECOND_BACKGROUND_IN_PACKETS = []
-THIRD_PERSON_IN_PACKETS = []
+AGGREGATES = []
 
-for packet in IN_PACKETS:
-    if float(packet.udp.time_relative) <= 139.0:
-        FIRST_PERSON_IN_PACKETS.append(packet)
-    elif float(packet.udp.time_relative) <= 210.0:
-        FIRST_BACKGROUND_IN_PACKETS.append(packet)
-    elif float(packet.udp.time_relative) <= 279.0:
-        SECOND_PERSON_IN_PACKETS.append(packet)
-    elif float(packet.udp.time_relative) <= 353.0:
-        SECOND_BACKGROUND_IN_PACKETS.append(packet)
-    else:
-        THIRD_PERSON_IN_PACKETS.append(packet)
+list = []
+if len(PACKETS) > 0:
+    list.append(PACKETS[0])
+    AGGREGATES.append(list)
+else:
+    print("there are no packets in the array \'PACKETS\'\n")
+
+for packet in PACKETS[1:]:
+    if int(float(AGGREGATES[-1][-1].udp.time_relative) / 0.5) < int(float(packet.udp.time_relative) / 0.5):
+        AGGREGATES.append([])
+    AGGREGATES[-1].append(packet)
+

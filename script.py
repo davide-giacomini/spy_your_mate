@@ -17,31 +17,21 @@ nest_asyncio.apply()
 
 path = "capture.pcapng"
 
-inbound_packets = pyshark.FileCapture(path, display_filter='ip.src == 149.137.11.203 && ip.dst == 192.168.1.15 && udp.srcport == 8801 && udp.dstport == 60235')
-outbound_packets = pyshark.FileCapture(path, display_filter='ip.dst == 149.137.11.203 && ip.src == 192.168.1.15 && udp.dstport == 8801 && udp.srcport == 60235')
+packets = pyshark.FileCapture(path, display_filter='ip.addr == 149.137.11.203 && ip.addr == 192.168.1.15 && udp.port == 8801 && udp.port == 60235')
 
 IN_PACKETS = []
 OUT_PACKETS = []
 
+PACKETS = []
+
 count = 0
-for packet in inbound_packets:
+for packet in packets:
   try:
-    IN_PACKETS.append(packet)
+    PACKETS.append(packet)
     count+=1
     if count%1000 == 0:
         print(count)
   except:
     print("some error")
 
-count = 0
-for packet in outbound_packets:
-  try:
-    OUT_PACKETS.append(packet)
-    count+=1
-    if count%1000 == 0:
-        print(count)
-  except:
-    print("some error")
-
-print(len(IN_PACKETS))
-print(len(OUT_PACKETS))
+print(len(PACKETS))
