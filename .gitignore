@@ -1,5 +1,5 @@
 ./venv
 .idea
 
-# File too big
-capture_train.pcapng
+# Files too big
+*.pcapng

@@ -28,34 +28,15 @@ def in_out_pkts_number(packets):
 def person_or_background(packets):
     first_time = float(packets[0].udp.time_relative)
     last_time = float(packets[-1].udp.time_relative)
+    FIRST_THRESHOLD = 139.0
+    SECOND_THRESHOLD = 210.0
+    THIRD_THRESHOLD = 279.0
+    FOURTH_THRESHOLD = 353.0
 
-    if last_time < 139.0 or first_time >= 353.0 or (first_time >= 210.0 and last_time < 279.0):
+    if last_time < FIRST_THRESHOLD or first_time >= FOURTH_THRESHOLD or (first_time >= SECOND_THRESHOLD and last_time < THIRD_THRESHOLD):
         return 1
-    elif (first_time >= 139.0 and last_time < 210.0) or (first_time >= 279.0 and last_time < 353.0):
-        return 0
     else:
-
-        threshold = 0.0
-        if first_time < 139.0:
-            threshold = 139.0
-        elif first_time < 210.0:
-            threshold = 210.0
-        elif first_time < 279.0:
-            threshold = 279.0
-        else:
-            threshold = 353.0
-
-        less = 0
-        more = 0
-        for packet in packets:
-            if float(packet.udp.time_relative) < threshold:
-                less += 1
-            else:
-                more += 1
-        if threshold == 139.0 or 279.0:
-            return 1 if less > more else 0
-        else:
-            return 1 if less <= more else 0
+        return 0
 
 
 data = []
@@ -83,4 +64,4 @@ for frame in FRAMES:
 data.extend([time_interval, packets_number, avg_pack_intervals, avg_pack_sizes, inbound_pkts_number, outbound_pkts_number, person])
 
 df = pd.DataFrame(np.transpose(data), columns=['Time Interval', 'Pkts number', 'Avg pkts interval', 'Avg pkts size', 'Inbound pkts', 'Outbound pkts', 'Person'])
-df.to_csv('train.csv')
+df.to_csv('capture1_train.csv')
