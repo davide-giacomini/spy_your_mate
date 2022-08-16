@@ -1,58 +1,18 @@
-delta_sum_first_person_in = 0.0
-delta_sum_first_person_out = 0.0
-delta_sum_first_background_in = 0.0
-delta_sum_first_background_out = 0.0
-delta_sum_second_person_in = 0.0
-delta_sum_second_person_out = 0.0
-delta_sum_second_background_in = 0.0
-delta_sum_second_background_out = 0.0
-delta_sum_third_person_in = 0.0
-delta_sum_third_person_out = 0.0
+# ML algorithm
 
-for packet in FIRST_PERSON_IN_PACKETS[1:]:
-    delta_sum_first_person_in += float(packet.udp.time_delta)
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
 
-for packet in FIRST_PERSON_OUT_PACKETS[1:]:
-    delta_sum_first_person_out += float(packet.udp.time_delta)
+train = pd.read_csv('train.csv')
 
-for packet in FIRST_BACKGROUND_IN_PACKETS[1:]:
-    delta_sum_first_background_in += float(packet.udp.time_delta)
+feature_cols = train.columns.values.tolist()
+feature_cols.pop(0)  # The first column is unnamed
+feature_cols.pop(0) # The second column is the time interval, and it is not useful
+feature_cols.pop(-1)
 
-for packet in FIRST_BACKGROUND_OUT_PACKETS[1:]:
-    delta_sum_first_background_out += float(packet.udp.time_delta)
+X = train.loc[:, feature_cols]
+y = train.Person
 
-for packet in SECOND_PERSON_IN_PACKETS[1:]:
-    delta_sum_second_person_in += float(packet.udp.time_delta)
+logreg = LogisticRegression()
 
-for packet in SECOND_PERSON_OUT_PACKETS[1:]:
-    delta_sum_second_person_out += float(packet.udp.time_delta)
-
-for packet in SECOND_BACKGROUND_IN_PACKETS[1:]:
-    delta_sum_second_background_in += float(packet.udp.time_delta)
-
-for packet in SECOND_BACKGROUND_OUT_PACKETS[1:]:
-    delta_sum_second_background_out += float(packet.udp.time_delta)
-
-for packet in THIRD_PERSON_IN_PACKETS[1:]:
-    delta_sum_third_person_in += float(packet.udp.time_delta)
-
-for packet in THIRD_PERSON_OUT_PACKETS[1:]:
-    delta_sum_third_person_out += float(packet.udp.time_delta)
-
-delta_averages = {'in': {'person': {1: (delta_sum_first_person_in / len(FIRST_PERSON_IN_PACKETS)),
-                                    2: (delta_sum_second_person_in / len(SECOND_PERSON_IN_PACKETS)),
-                                    3: (delta_sum_third_person_in / len(THIRD_PERSON_IN_PACKETS))
-                                    },
-                         'background': {1: (delta_sum_first_background_in / len(FIRST_BACKGROUND_IN_PACKETS)),
-                                        2: (delta_sum_second_background_in / len(SECOND_BACKGROUND_IN_PACKETS))
-                                        }
-                         },
-                  'out': {'person': {1: (delta_sum_first_person_out / len(FIRST_PERSON_OUT_PACKETS)),
-                                     2: (delta_sum_second_person_out / len(SECOND_PERSON_OUT_PACKETS)),
-                                     3: (delta_sum_third_person_out / len(THIRD_PERSON_OUT_PACKETS))
-                                     },
-                         'background': {1: (delta_sum_first_background_out / len(FIRST_BACKGROUND_OUT_PACKETS)),
-                                        2: (delta_sum_second_background_out / len(SECOND_BACKGROUND_OUT_PACKETS))
-                                        }
-                          }
-                  }
+logreg.fit(X, y)

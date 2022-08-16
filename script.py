@@ -15,7 +15,7 @@ import numpy as np
 
 nest_asyncio.apply()
 
-path = "capture.pcapng"
+path = "capture_train.pcapng"
 
 packets = pyshark.FileCapture(path, display_filter='ip.addr == 149.137.11.203 && ip.addr == 192.168.1.15 && udp.port == 8801 && udp.port == 60235')
 
