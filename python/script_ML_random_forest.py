@@ -2,7 +2,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-train = pd.read_csv('capture1_train.csv')
+train = pd.concat(
+    map(pd.read_csv, ['capture1_train.csv', 'capture3_train.csv']), ignore_index=True)
 
 feature_cols = train.columns.values.tolist()
 feature_cols.pop(0)  # The first column is unnamed
