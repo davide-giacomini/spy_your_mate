@@ -23,4 +23,4 @@ X_new = test.loc[:, feature_cols]
 new_pred_class = logreg.predict(X_new)
 
 kaggle_data = pd.DataFrame({'PacketId': test.xs('Unnamed: 0', axis=1), 'Person':new_pred_class}).set_index('PacketId')
-kaggle_data.to_csv('prediction.csv')
+kaggle_data.to_csv('prediction_logistic_regression.csv')
