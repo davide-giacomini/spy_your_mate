@@ -27,6 +27,8 @@ def in_out_pkts_number(packets):
 
 def cycle(callback, frames):
 
+    print("Executing script 3.\n")
+
     data = []
 
     time_interval = []  # Time interval

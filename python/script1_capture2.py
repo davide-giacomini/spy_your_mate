@@ -1,22 +1,11 @@
 ## THIS SCRIPT CONVERTS ALL THE PACKETS INTO AN ARRAY DIVIDED IN INBOUND AND OUTBOUND
 ## IT IS VERY LONG SO IT'S ADVICED TO HAVE IT RUN ON A PYTHON CONSOLE TO SAVE THE ARRAYS AND THEN USE THE OTHER SCRIPTS
 
-
-# Needed to run tshark on colab
-import os
-import nest_asyncio
-
 import pyshark
 
-# Useful for treating table-like data
-import pandas as pd
-# Numerical operations library
-import numpy as np
-
-nest_asyncio.apply()
+print("Executing script 1.\n")
 
 path = "capture2_test.pcapng"
-
 packets = pyshark.FileCapture(path, display_filter='ip.addr == 149.137.11.142 && ip.addr == 192.168.1.15 && udp.port == 8801 && udp.port == 51541')
 
 PACKETS = []
@@ -31,4 +20,4 @@ for packet in packets:
   except:
     print("some error")
 
-print(len(PACKETS))
+print("\n There are " + str(len(PACKETS)) + " packets in capture 2.\n")
