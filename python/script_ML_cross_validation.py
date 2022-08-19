@@ -21,13 +21,13 @@ train_sizes = np.linspace(0,0.8,51)[1:] # The train size must be a number greate
 # In fact, the function "train_test_split(X_main, y_main, test_size=0.2)" is used to create a static validation set out of the training set
 # In this case, I use a 5-kfold cross-validation
 # LOGISTIC REGRESSION
-train_sizes, train_scores, val_scores = learning_curve(estimator = LogisticRegression(), X = df_train[features],
-                                                       y = df_train[target], train_sizes = train_sizes, cv = 10,
+train_sizes, train_scores, val_scores = learning_curve(estimator = LogisticRegression(max_iter=2000), X = df_train[features],
+                                                       y = df_train[target], train_sizes = train_sizes, cv = 5,
                                                        scoring = 'accuracy', shuffle=True)
 
-# print('Training scores:\n\n', train_scores)
-# print('\n', '-' * 70) # separator to make the output easy to read
-# print('\nValidation scores:\n\n', val_scores)
+print('Training scores:\n\n', train_scores)
+print('\n', '-' * 70) # separator to make the output easy to read
+print('\nValidation scores:\n\n', val_scores)
 
 train_scores_mean = train_scores.mean(axis = 1)
 val_scores_mean = val_scores.mean(axis = 1)
@@ -54,9 +54,9 @@ train_sizes, train_scores, val_scores = learning_curve(estimator = RandomForestC
                                                        y = df_train[target], train_sizes = train_sizes, cv = 5,
                                                        scoring = 'accuracy', shuffle=True)
 
-# print('Training scores:\n\n', train_scores)
-# print('\n', '-' * 70) # separator to make the output easy to read
-# print('\nValidation scores:\n\n', val_scores)
+print('Training scores:\n\n', train_scores)
+print('\n', '-' * 70) # separator to make the output easy to read
+print('\nValidation scores:\n\n', val_scores)
 
 train_scores_mean = train_scores.mean(axis = 1)
 val_scores_mean = val_scores.mean(axis = 1)
