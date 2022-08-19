@@ -15,7 +15,7 @@ df_train = pd.concat(map(pd.read_csv, ['capture1_train.csv', 'capture3_train.csv
 features = list(df_train.columns)[2:-1]
 target = list(df_train.columns)[-1]
 
-train_sizes = np.linspace(0,0.9,51)[1:] # The train size must be a number greater than zero, hence I exclude the first number
+train_sizes = np.linspace(0,0.8,51)[1:] # The train size must be a number greater than zero, hence I exclude the first number
 
 # Note that "learning_curve" will take care of putting aside a validation set, because we will use cross-validation.
 # In fact, the function "train_test_split(X_main, y_main, test_size=0.2)" is used to create a static validation set out of the training set
@@ -49,7 +49,7 @@ plt.legend()
 
 
 # RANDOM FOREST
-train_sizes = np.linspace(0,0.9,11)[1:]
+train_sizes = np.linspace(0,0.8,11)[1:]
 train_sizes, train_scores, val_scores = learning_curve(estimator = RandomForestClassifier(), X = df_train[features],
                                                        y = df_train[target], train_sizes = train_sizes, cv = 5,
                                                        scoring = 'accuracy', shuffle=True)
@@ -75,9 +75,3 @@ plt.title('Learning curves for a random forest model', fontsize = 18, y = 1.03)
 plt.legend()
 
 plt.show()
-
-# TODO non mi serve qui
-# Set data
-df_test = pd.read_csv('capture2_test.csv')  # Test dataframe
-X_test = df_test.iloc[:,2:-1].values   # The features data of the test data
-y_test = df_test.iloc[:,-1].values # The target of the test data
