@@ -81,6 +81,23 @@ def in_out_pkts_size(packets):
     else:
         return {'in': 0, 'out': (tot_size_out / tot_number_out)}
 
+def avg_bit_rate(packets):
+    tot_bytes = 0.0
+    for packet in packets:
+        tot_bytes += float(packet.length)
+    return tot_bytes / 0.5  # bytes per half a second
+
+def in_out_bit_rate(packets):
+    tot_bytes_in = 0
+    tot_bytes_out = 0
+    for packet in packets:
+        if str(packet.ip.src) == '192.168.1.15':
+            tot_bytes_out += float(packet.length)
+        elif str(packet.ip.dst) == '192.168.1.15':
+            tot_bytes_in += float(packet.length)
+
+    return {'in': (tot_bytes_in / 0.5), 'out': (tot_bytes_out / 0.5)}
+
 
 def cycle(callback, frames):
 
@@ -98,6 +115,9 @@ def cycle(callback, frames):
     avg_out_pkts_interv = [] # Outbound packet interval
     avg_in_pkts_size = []   # Inbound packet size
     avg_out_pkts_size = []  # Outbound packet size
+    bit_rate = []
+    bit_rate_in = []
+    bit_rate_out = []
     person = []  # If the person is present (1) or not (0)
 
     count = 0.0
@@ -112,13 +132,18 @@ def cycle(callback, frames):
         avg_out_pkts_interv.append(in_out_pkts_interval(frame)['out'])
         avg_in_pkts_size.append(in_out_pkts_size(frame)['in'])
         avg_out_pkts_size.append(in_out_pkts_size(frame)['out'])
+        bit_rate.append(avg_bit_rate(frame))
+        bit_rate_in.append(in_out_bit_rate(frame)['in'])
+        bit_rate_out.append(in_out_bit_rate(frame)['out'])
         person.append(callback(frame))
 
         count += 1
 
     data.extend([time_interval, packets_number, avg_pack_intervals, avg_pack_sizes, inbound_pkts_number,
-                 outbound_pkts_number, avg_in_pkts_interv, avg_out_pkts_interv, avg_in_pkts_size, avg_out_pkts_size, person])
+                 outbound_pkts_number, avg_in_pkts_interv, avg_out_pkts_interv, avg_in_pkts_size, avg_out_pkts_size,
+                 bit_rate, bit_rate_in, bit_rate_out, person])
 
     return pd.DataFrame(np.transpose(data), columns=['Time Interval', 'Pkts number', 'Avg pkts interval',
                                                    'Avg pkts size', 'Inbound pkts','Outbound pkts', 'In pkts interval',
-                                                     'Out pkts interval', 'In pkts size', 'Out pkts size', 'Person'])
+                                                     'Out pkts interval', 'In pkts size', 'Out pkts size', 'Bit Rate',
+                                                     'Inbound bit rate', 'Outbound bit rate', 'Person'])
