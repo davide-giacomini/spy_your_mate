@@ -1,0 +1,34 @@
+\section{Method}
+
+The first step was to choose a software for network traffic, hence I chose Wireshark\footnote{\href{https://www.wireshark.org/}{wireshark.org}}. I recorded three vide calls. In the first one I was alone, in the other two I was with another person (different each time). The captures duration is more or less between 300 seconds and 420 seconds. For the video calls I used my laptop (Asus) and my smartphone (Samsung Galaxy S10). The provider I used was Zoom\footnote{\href{https://zoom.us/}{zoom.us}}, as I am comfortable with it.
+
+I needed both the IP addresses and the UDP ports to filter the packets of the video call. In Wireshark there is a convenient window under \texttt{Statistics -> Conversations} which shows you the conversations based on the chosen protocol. Clicking on \texttt{UDP}, I ordered the conversations in order to highlight the one with the highest number of packets (and bytes) transferred. It was easy to see which one is the actual video call, because there is a difference of several orders of magnitude in number of bytes exchanged. The addresses and the ports that I extracted from Wireshark can be seen at Table~\ref{table:table-addresses}.
+
+
+\subsection{Python Code}
+After extracting the addresses, I used them to filter out only the packets regarding the conversation between the parties. I used PyShark\footnote{\href{https://pypi.org/project/pyshark/}{pypi.org/project/pyshark/}} to manipulate the captures. The Python scripts are used to extract the packets, organize them in chunks of half a second, and save the chunks and their features on a csv file, later used for training or testing. The scripts are called in order by the \texttt{prepare\_*.py} scripts. I divided them for convenience during debugging.
+
+The training and testing is done by two scripts called \texttt{script\_ML\_*.py}. The cross validation is only used to understand if the features chosen are good to make an accurate prediction, and the second script is used to actually predict the results. I used the second capture (\texttt{capture2\_test.csv}) to test the model and the other two captures to train it.
+
+I incrementally added features to get a model each time more accurate, and I finally ended up with (TODO NUMBER OF FEATURES) features. Each of them represents a chunk of half a second packets. I am going to describe them below. Notice that each point represents three features, i.e. inbound packets, outbound packets and all packets:
+\begin{itemize}
+    \item Average packet interval: the average time between one packet and the next.
+    \item Average packet size: the average packet size in bytes.
+    \item Packets number: the total number of packets.
+    \item Bit rate: the number of bytes per half a second.
+    \item TODO: more features
+\end{itemize}
+
+I used two different algorithms to train the model: logistic regression and random forest. The predictions are saved as \texttt{csv} files to be later used in Node-RED.
+
+\subsection{Node-RED Flow}
+In Node-RED I was required to compare the ground truth with the actual prediction done in Python.
+
+In order to do that, I read with Node-RED two different csv files (the capture file exported in csv and the prediction of python) and compared the results with the Chart of Node-RED. For comparing the results, I had to filter out the ground truth taking only the multiples of half a second. The prediction file, instead, had already been prepared with Python.
+
+\subsection{ML Training and Testing}
+For the training and the testing of models (both logistic regression and random forest), I divided the work in two main parts. The former one is the cross validation, to understand more or less the accuracy of my predictions, and the latter one is the actual training and prediction with the features I chose during the cross validation. Both the cross validation and the actual training and prediction take as input the \texttt{capture*.csv} files that I prepared with PyShark. I used \texttt{scikit-learn}\footnote{\href{https://scikit-learn.org/stable/}{scikit-learn.org/stable/}} for the ML methods.
+
+The cross validation file (\texttt{script\_ML\_cross\_validation.py}) takes as input the csv files thought for the training part (I chose capture 1 and 3 for the training part) and applies a K fold cross validation with $k=5$. I set the maximum training set size to the 80\% of the training data, hence the minimum validation set is 20\% of the training data. I am basing the terminology on the slide number 5 from the set of slides \cite{matteucci2022neuralnetworkstraining}. After the cross validation, a learning curve shows the training and validation accuracy in function of the number of samples (training size).
+
+After the cross vaildation, we can proceed with the actual training of the model and the subsequent prediction with the trained model. The steps are two: the training and then the testing. For the training, as before, the file takes as input the csv training files and trains the two models (logistic regression and random forest) with those two files. Then, for the testing, the file takes as input the csv file of capture 2 and predicts the presence or absence of a person in front of the webcam. The prediction is then exported in a csv file for Node-RED and is also compared to the ground truth, showing the confusion matrix and the accuracy of the prediction.

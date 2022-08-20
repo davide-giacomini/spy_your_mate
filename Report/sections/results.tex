@@ -1,0 +1,43 @@
+\section{Experimental Results}
+
+I ran several trials, but I will report here only the ones that I found interesting for the sake of the document.
+
+\subsection{First attempt}
+I started with five features: average packets interval, average packets size, inbound and outbound packets number, total packets number.
+
+\subsubsection{Cross validation results}
+
+The learning curve of the cross validation for both models can be seen at Fig.~\ref{fig:learning-curves-first-attempt}. Notice that the training curve of the random forest is always equal to 100\% accuracy, and that is not exactly the best behaviour required (Fig.~\ref{fig:learning-curves-first-attempt-randfor}). Nonetheless, the validation accuracy is quite consistent with the testing results, which I will show later. In particular, the validation accuracy stands at around 70\%. On the other hand, the logistic regression curve is quite ``normal'' (Fig.~\ref{fig:learning-curves-first-attempt-logreg}). The training accuracy is about 77\% and the validation accuracy is about 76\%.
+
+\subsubsection{Training and testing results}
+
+After the prediction, the Python script shows a confusion matrix and the accuracy for each model. You can see both confusion matrices and accuracies at Fig.~\ref{fig:learning-curves-first-attempt}. You can notice that the model predicts relatively well when the person is actually in front of the webcam (output 1), but it cannot predict very well when there is only background (output 0). After exporting the predicted results to the csv file, I used Node-RED to read from that file and compare it to the ground truth. The results of the comparison are shown in a Node-RED chart, that I am reporting here at Fig.~\ref{fig:chart-first-attempt}. As we noticed with the confusion matrices, the models get a better result when there is actually a person in front of the camera. In this precise case, the random forest model is very dirty and not very useful.
+
+\subsection{Second attempt}
+For this second attempt, I added some features based on the precedent ones, dividing though inbound and outbound packets. In particular, I added: average inbound and outbound packets interval, average inbound and outbound packets size.
+
+\subsubsection{Cross validation results}
+
+
+The learning curve here got a little better for the random forest model. As we can see at Fig.~\ref{fig:learning-curves-second-attempt}, the training curve for the logistic regression model stands at around 78\%, the validation curve for the same model stands at around 76\% and the validation curve for the other model is around 72\% (2\% more than the first attempt). As always, the training curve of the random forest model is not informative, as it always stays at 100\%.
+
+\subsubsection{Training and testing results}
+
+We can see from Fig.~\ref{fig:confusion-matrix-second-attempt} how the prediction of the presence of a person has got better again, expecially comparing the matrices to the ones at Fig.~\ref{fig:confusion-matrix-first-attempt}. Although, the background recognition is still a problem. If we take a look at the chart of Fig.~\ref{fig:chart-second-attempt}, we can see how now the situation got better expecially for the random forest model. We can basically see that, apart from one or two problems, the prediction of the presence of a person is basically accurate for both models.
+
+\subsection{Last attempt}
+For the last attempt, I added the bit rate for inbound, outbound and all the packets.
+
+\subsubsection{Cross validation results}
+
+I could still increase the validation accuracy for the random forest model. At Fig.~\ref{fig:learning-curves-last-attempt} we can see the different values. The training and validation curves of the logistic regression model reciprocally stands at around 79\% and 76\%, and the validation curve of the random forest model is 74\%.
+
+\subsubsection{Training and testing results}
+
+The confusion matrices at Fig.~\ref{fig:confusion-matrix-last-attempt} shows that there is relatively no difference between the previous attempt, but the charts at Fig.~\ref{fig:chart-third-attempt} show a very little improvement in the cleanness of the prediction. Unfortunately, although the last background interval is predicted quite well, especially with the logistic regression model, the first one is not predicted at all.
+
+\subsection{Failed attempts}
+
+I will not report here the several attempts that are not worth the time of reading, but I wanted to consider a particular case.
+
+I told you that I divided the packets in chunks of half a second, but it is not the only possibility. The rules of the project required to divide the packets in chunks between 100ms and 900ms, hence I also tried to change the interval, for example with 250ms of interval. Although the number of samples was increased (because of the shorter interval), this seemed to be useless from the point of view of training the models. Instead, it seemed to degrade the predictions, especially of the logistic regression model.
