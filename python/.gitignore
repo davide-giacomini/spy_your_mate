@@ -1,5 +1,6 @@
 ./venv
 .idea
+__pycache__/
 
 # Files too big
 *.pcapng

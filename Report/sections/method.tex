@@ -6,22 +6,25 @@ I needed both the IP addresses and the UDP ports to filter the packets of the vi
 
 
 \subsection{Python Code}
+All the Python code that I will refer to in this section can be found on GitHub under the folder \texttt{python/}.
+
 After extracting the addresses, I used them to filter out only the packets regarding the conversation between the parties. I used PyShark\footnote{\href{https://pypi.org/project/pyshark/}{pypi.org/project/pyshark/}} to manipulate the captures. The Python scripts are used to extract the packets, organize them in chunks of half a second, and save the chunks and their features on a csv file, later used for training or testing. The scripts are called in order by the \texttt{prepare\_*.py} scripts. I divided them for convenience during debugging.
 
 The training and testing is done by two scripts called \texttt{script\_ML\_*.py}. The cross validation is only used to understand if the features chosen are good to make an accurate prediction, and the second script is used to actually predict the results. I used the second capture (\texttt{capture2\_test.csv}) to test the model and the other two captures to train it.
 
-I incrementally added features to get a model each time more accurate, and I finally ended up with (TODO NUMBER OF FEATURES) features. Each of them represents a chunk of half a second packets. I am going to describe them below. Notice that each point represents three features, i.e. inbound packets, outbound packets and all packets:
+I incrementally added features to get a model each time more accurate, and I finally ended up with 12 features. Each of them represents a chunk of half a second packets. I am going to describe them below. Notice that each point represents three features, i.e. inbound packets, outbound packets and all packets:
 \begin{itemize}
     \item Average packet interval: the average time between one packet and the next.
     \item Average packet size: the average packet size in bytes.
     \item Packets number: the total number of packets.
     \item Bit rate: the number of bytes per half a second.
-    \item TODO: more features
 \end{itemize}
 
 I used two different algorithms to train the model: logistic regression and random forest. The predictions are saved as \texttt{csv} files to be later used in Node-RED.
 
 \subsection{Node-RED Flow}
+The Node-RED flow is available on GitHub under \texttt{NodeRed/nodered\_flow.txt}.
+
 In Node-RED I was required to compare the ground truth with the actual prediction done in Python.
 
 In order to do that, I read with Node-RED two different csv files (the capture file exported in csv and the prediction of python) and compared the results with the Chart of Node-RED. For comparing the results, I had to filter out the ground truth taking only the multiples of half a second. The prediction file, instead, had already been prepared with Python.
