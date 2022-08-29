@@ -1,4 +1,4 @@
-## With this script I will extract the features of the 860 frames and I will organize them with pandas
+## With this script I will extract the features of the frames and I will organize them with pandas
 
 import script3_util
 

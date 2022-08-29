@@ -1,12 +1,6 @@
-## I will consider the test set as the capture number 2 because I need to compare with a chart in NodeRed the actual
-## ground truth of the capture and the prediction done by the model. Hence, the capture 3 will be my TEST DATA.
-
-## The other captures will be my TRAINING DATA. I will divide my training data into TRAINING SET and VALIDATION SET using
-## an apposite method in scikit-learn. I will not use the same method for the whole TRAINING DATASET because I need to
-## have a possible comparison in NodeRed.
-## TODO use an image to explain the terminology (I used the AN2DL slide)
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import learning_curve
@@ -20,6 +14,7 @@ train_sizes = np.linspace(0,0.8,51)[1:] # The train size must be a number greate
 # Note that "learning_curve" will take care of putting aside a validation set, because we will use cross-validation.
 # In fact, the function "train_test_split(X_main, y_main, test_size=0.2)" is used to create a static validation set out of the training set
 # In this case, I use a 5-kfold cross-validation
+
 # LOGISTIC REGRESSION
 train_sizes, train_scores, val_scores = learning_curve(estimator = LogisticRegression(max_iter=2000), X = df_train[features],
                                                        y = df_train[target], train_sizes = train_sizes, cv = 5,
@@ -34,8 +29,6 @@ val_scores_mean = val_scores.mean(axis = 1)
 print('Mean training scores\n\n', pd.Series(train_scores_mean, index = train_sizes))
 print('\n', '-' * 20) # separator
 print('\nMean validation scores\n\n', pd.Series(val_scores_mean, index = train_sizes))
-
-import matplotlib.pyplot as plt
 
 plt.figure()
 plt.style.use('seaborn')

@@ -1,1 +1,3 @@
-# project_iot_wi_python_scripts
+# Python code
+
+These script are needed for ML analysis and features extraction.

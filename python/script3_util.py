@@ -1,3 +1,6 @@
+## This script is useful to avoid code repetition.
+## The central function (cycle) will be called the specific scripts of each capture.
+
 import numpy as np
 import pandas as pd
 
