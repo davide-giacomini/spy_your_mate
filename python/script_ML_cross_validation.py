@@ -1,3 +1,8 @@
+# This comment is here because I don't usually work with AI and ML and I always forget the difference explained here:
+# Cross-validation (script `script_ML_cross_validation.py`) is useful for tuning hyperparameters, i.e. which features are best for training the model.
+# The validation and training accuracies of the cross-validation show us if the hyperparameters chosen are good for training, and in that case, we use those hyperparameters for training the network.
+# Then, the network is trained (`script_ML_training_and_prediction.py`) using all and only the hyperparameters already chosen during the cross-validation.
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
